@@ -80,7 +80,7 @@ strreport_path = "E:/EGDAR_10K/"
 strticker_list = "M:/Code/Springboard/Capstone_Project_1/SPX_Constituents_2019-01-28.csv"
 strreport_urls = "M:/Code/Springboard/Capstone_Project_1/Report_URLS_2019-01-28.csv"
 strresults_path = "E:/Parse_Results_2019-01-28.csv"
-dctFilters = {"GICS Sector": None, "GICS Sub Industry": None, "Symbol":"BBT", "Filename": None}
+dctFilters = {"GICS Sector": "Financials", "GICS Sub Industry": None, "Symbol": None, "Filename": None}
 lstaggresults = []
 
 # Keywords to search for.
@@ -110,4 +110,3 @@ for index, dfrrow in dfrfilenames.iterrows():
 
 dfrfilenames.to_csv(strresults_path)
 
-print("Thanks")
