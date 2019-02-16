@@ -43,7 +43,7 @@ strticker_list = "M:/Code/Springboard/Capstone_Project_1/Capstone_Project_1/SPX_
 strreport_path = "E:/"
 strstart_date = "2012-01-01" #Format YYYY-M-D
 strend_date = "2019-01-01" #Format YYYY-M-D
-strtoken = "e60403fe4c3106347171d0eb1962e75ceaedb357"
+strtoken = ""
 
 dctFilters = {"GICS Sector": "Financials", "GICS Sub Industry": None, "Symbol": None}
 # Load up the list of constituent tickers and convert it to a list.
