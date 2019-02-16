@@ -77,21 +77,28 @@ def parsetext_fromfile(strreport_path, strfile_name):
 
 # Data local paths
 strreport_path = "E:/EGDAR_10K/"
-strticker_list = "M:/Code/Springboard/Capstone_Project_1/SPX_Constituents_2019-01-28.csv"
-strreport_urls = "M:/Code/Springboard/Capstone_Project_1/Report_URLS_2019-01-28.csv"
-strresults_path = "E:/Parse_Results_2019-01-28.csv"
+strticker_list = "M:/Code/Springboard/Capstone_Project_1/Capstone_Project_1/SPX_Constituents_2019-01-28.csv"
+strreport_urls = "M:/Code/Springboard/Capstone_Project_1/Capstone_Project_1/Report_URLS_2019-01-28.csv"
+strreport_urls = "M:/Code/Springboard/Capstone_Project_1/Capstone_Project_1/Parse_Results_2019-01-28.csv"
+strresults_path = "M:/Code/Springboard/Capstone_Project_1/Capstone_Project_1/Parse_Results_2019-01-28.csv"
 dctFilters = {"GICS Sector": "Financials", "GICS Sub Industry": None, "Symbol": None, "Filename": None}
 lstaggresults = []
+# Set this flag if you want to reprocess all records rather than just incrementally update the missing ones.
+blnreprocess = False
 
 # Keywords to search for.
-lstwords = ["employ","employed","employs","employee","employees","full time","full\-time","fulltime"]
+lstwords = ["employ","employed","employs","employee","employees","full time","full\-time","fulltime","staff"]
 lstexclustions = ["401\(k\)","retire","retired","retirement","tax"]
 
 # Read in the list of filenames from the reports.
 dfrfilenames = pd.read_csv(strreport_urls)
-dfrtickers = pd.read_csv(strticker_list)
-dfrfilenames = dfrfilenames.merge(dfrtickers, how="left", left_on="ticker", right_on="Symbol")
-dfrfilenames.insert(len(dfrfilenames.columns), "Results", "")
+
+# Do column clean up, creating the columns needed for later storage of results if they don't exist.
+if "Results" not in dfrfilenames.columns:
+    dfrtickers = pd.read_csv(strticker_list)
+    dfrfilenames = dfrfilenames.merge(dfrtickers, how="left", left_on="ticker", right_on="Symbol")
+    dfrfilenames.insert(len(dfrfilenames.columns)-1, "Results", "")
+dfrfilenames = dfrfilenames.fillna("")
 
 if dctFilters["GICS Sector"] is not None:
     dfrfilenames = dfrfilenames[dfrfilenames["GICS Sector"] == dctFilters["GICS Sector"]]
@@ -104,9 +111,10 @@ if dctFilters["Filename"] is not None:
 
 # Loop through dataframe and process files.
 for index, dfrrow in dfrfilenames.iterrows():
-     lsttemp = parsetext_fromfile(strreport_path, dfrrow["filename"])
-     dfrfilenames.at[index, "Results"] = lsttemp
-     print(dfrrow["filename"])
+    if(blnreprocess or dfrrow["Results"] == ""):
+        lsttemp = parsetext_fromfile(strreport_path, dfrrow["filename"])
+        dfrfilenames.at[index, "Results"] = lsttemp
+        print(dfrrow["filename"])
 
 dfrfilenames.to_csv(strresults_path)
 
